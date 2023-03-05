@@ -2,16 +2,18 @@
 #include <algorithm>
 #include <string>
 #include <fstream>
+#include <filesystem>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <syslog.h>
+#include <ctime>
 
 using namespace std;
 
-const string WORKING_DIRECTORY = "";
-const string LOG_FILENAME = "";
+const string WORKING_DIRECTORY = filesystem::current_path().string() + "/workdir";
+const string LOG_FILENAME = "log.txt";
 
 pid_t pid;
 
@@ -21,8 +23,11 @@ pid_t pid;
  * @param content The string to be logged
  */
 void log(const string& content) {
-    ofstream out(WORKING_DIRECTORY + LOG_FILENAME, ofstream::out | ofstream::app);
-    out << content << endl;
+    time_t currentTime = time(0);
+    string timeStr = asctime(localtime(&currentTime));
+    timeStr.pop_back();     // remove newline char solely for formatting purpose
+    ofstream out(WORKING_DIRECTORY + "/" + LOG_FILENAME, ofstream::out | ofstream::app);
+    out << timeStr << "\t" << content << endl;
     out.close();
 }
 
