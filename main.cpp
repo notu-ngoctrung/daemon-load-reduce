@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <syslog.h>
+#include <signal.h>
 #include <ctime>
 #include <chrono>
 #include <thread>
@@ -18,7 +19,7 @@ using namespace std;
 const string WORKING_DIRECTORY = filesystem::current_path().string() + "/workdir";
 const string LOG_FILENAME = "log.txt";
 const double LOAD_THRESHOLD = 20;
-const int CPU_COMSUMING_PROCESSES_LIMIT = 10;
+const int KILL_PROCESSES_LIMIT = 10;
 
 struct Process {
     pid_t pid, ppid;
@@ -81,7 +82,7 @@ void daemonize() {
     openlog("load-reduce-daemon", LOG_PID, LOG_DAEMON);
 }
 
-vector<Process> getCpuExpensiveProcesses(const int limit) {
+vector<Process> getProcessesSortedByCpu() {
     vector<Process> expensiveProc;
     FILE* cmdOutput = popen("ps -eo 'pid,pcpu,vsz,ppid,comm'", "r");
     if (!cmdOutput) {
@@ -108,8 +109,27 @@ vector<Process> getCpuExpensiveProcesses(const int limit) {
     sort(expensiveProc.begin(), expensiveProc.end(), [](const Process &a, const Process &b) -> bool {
         return a.percentCpu > b.percentCpu;
     });
-    expensiveProc.resize(min(limit, (int)expensiveProc.size()));
     return expensiveProc;
+}
+
+vector<Process> killProcesses(const vector<Process>& processes, const int lim) {
+    if (!sessionStatus) 
+        return;
+
+    vector<Process> killed;
+    for(int i = 0; i < processes.size() && killed.size() < lim; i++) {
+        int result = kill(processes[i].pid, SIGTERM);
+        if (result == 0) {
+            log("Killed: " + to_string(processes[i].pid) + " - " + processes[i].name);
+            killed.push_back(processes[i]);
+        } 
+        else if (result == EPERM) 
+            log("Killing not permitted: " + to_string(processes[i].pid) + " - " + processes[i].name);
+        else if (result == ESRCH)
+            log("PID not found to kill: " + to_string(processes[i].pid) + " - " + processes[i].name);
+    }
+    
+    return killed;
 }
 
 int main() {
@@ -135,8 +155,8 @@ int main() {
         //     continue;
         // }
 
-        vector<Process> cpuExpensiveProc = getCpuExpensiveProcesses(CPU_COMSUMING_PROCESSES_LIMIT);
-        // killProcesses(cpuExpensiveProc);
+        vector<Process> sortedProcsByCpu = getProcessesSortedByCpu();
+        vector<Process> killedProcs = killProcesses(sortedProcsByCpu, KILL_PROCESSES_LIMIT);
         if (!sessionStatus) {
             log("Closing current session.");
             continue;
