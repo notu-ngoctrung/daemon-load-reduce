@@ -1,5 +1,6 @@
 #include <iostream>
 #include <algorithm>
+#include <vector>
 #include <string>
 #include <fstream>
 #include <filesystem>
@@ -9,13 +10,26 @@
 #include <unistd.h>
 #include <syslog.h>
 #include <ctime>
+#include <chrono>
+#include <thread>
 
 using namespace std;
 
 const string WORKING_DIRECTORY = filesystem::current_path().string() + "/workdir";
 const string LOG_FILENAME = "log.txt";
+const double LOAD_THRESHOLD = 20;
+const int RECENT_PROCESSES_LIMIT = 10;
+
+struct Process {
+    pid_t pid, ppid;
+    double percentCpu, virtualMem;
+    string name;
+    Process(pid_t _p=0, pid_t _pp=0, double _p1=0, double _v=0, string _n=""): 
+        pid(_p), ppid(_pp), percentCpu(_p1), virtualMem(_v), name(_n) {}
+};
 
 pid_t pid;
+bool sessionStatus;     // true if the current session is doing ok; false otherwise
 
 /**
  * @brief Log a string by appending it into the log file (LOG_FILENAME).
@@ -67,7 +81,68 @@ void daemonize() {
     openlog("load-reduce-daemon", LOG_PID, LOG_DAEMON);
 }
 
+vector<Process> getRecentProcesses(const int limit) {
+    vector<Process> recentProcesses;
+    FILE* cmdOutput = popen("ps -eo 'pid,pcpu,vsz,ppid,comm'", "r");
+    if (!cmdOutput) {
+        log("Error: cannot execute popen(ps) command.");
+        sessionStatus = false;
+        return {};
+    }
+
+    char line[4096];
+
+    // Skip the first line
+    fgets(line, sizeof(line), cmdOutput);
+    // Start reading
+    while (fgets(line, sizeof(line), cmdOutput)) {
+        int curPid, ppid;
+        double pcpu, vsz;
+        char cmd[1024];
+        sscanf(line, "%d %lf %lf %d %s", &curPid, &pcpu, &vsz, &ppid, &cmd);
+        if (curPid != pid) 
+            recentProcesses.push_back(Process(pid, ppid, pcpu, vsz, cmd));
+        if (recentProcesses.size() >= limit)
+            break;
+    }
+
+    pclose(cmdOutput);
+    return recentProcesses;
+}
+
 int main() {
-    daemonize();
+    // daemonize();
+
+    chrono::seconds sleepPeriod(10);
+    chrono::system_clock::time_point nextRunTime = chrono::system_clock::now();
+
+    double loadavg[3];
+    while (true) {
+        this_thread::sleep_until(nextRunTime);
+        nextRunTime += sleepPeriod;
+
+        log("-------------------------------------------");
+        log("Hello, I woke up :)");
+        sessionStatus = true;
+        if (getloadavg(loadavg, 3) == -1) {
+            log("Cannot get the system load. Will try again in the next run");
+            continue;
+        }
+        // if (loadavg[2] <= LOAD_THRESHOLD) {
+        //     log("The load is " + to_string(loadavg[2]) + " <= " + to_string(LOAD_THRESHOLD) + ". No further actions needed");
+        //     continue;
+        // }
+
+        vector<Process> recentProcesses = getRecentProcesses(RECENT_PROCESSES_LIMIT);
+        if (!sessionStatus) {
+            log("Closing current session.");
+            continue;
+        }
+
+        // for(const Process &p : recentProcesses) {
+        //     cout << p.name << endl;
+        // }
+        return 0;
+    }
     return 0;
 }
