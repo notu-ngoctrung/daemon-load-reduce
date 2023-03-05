@@ -18,7 +18,7 @@ using namespace std;
 const string WORKING_DIRECTORY = filesystem::current_path().string() + "/workdir";
 const string LOG_FILENAME = "log.txt";
 const double LOAD_THRESHOLD = 20;
-const int RECENT_PROCESSES_LIMIT = 10;
+const int CPU_COMSUMING_PROCESSES_LIMIT = 10;
 
 struct Process {
     pid_t pid, ppid;
@@ -81,8 +81,8 @@ void daemonize() {
     openlog("load-reduce-daemon", LOG_PID, LOG_DAEMON);
 }
 
-vector<Process> getRecentProcesses(const int limit) {
-    vector<Process> recentProcesses;
+vector<Process> getCpuExpensiveProcesses(const int limit) {
+    vector<Process> expensiveProc;
     FILE* cmdOutput = popen("ps -eo 'pid,pcpu,vsz,ppid,comm'", "r");
     if (!cmdOutput) {
         log("Error: cannot execute popen(ps) command.");
@@ -101,13 +101,15 @@ vector<Process> getRecentProcesses(const int limit) {
         char cmd[1024];
         sscanf(line, "%d %lf %lf %d %s", &curPid, &pcpu, &vsz, &ppid, &cmd);
         if (curPid != pid) 
-            recentProcesses.push_back(Process(pid, ppid, pcpu, vsz, cmd));
-        if (recentProcesses.size() >= limit)
-            break;
+            expensiveProc.push_back(Process(pid, ppid, pcpu, vsz, cmd));
     }
-
     pclose(cmdOutput);
-    return recentProcesses;
+
+    sort(expensiveProc.begin(), expensiveProc.end(), [](const Process &a, const Process &b) -> bool {
+        return a.percentCpu > b.percentCpu;
+    });
+    expensiveProc.resize(min(limit, (int)expensiveProc.size()));
+    return expensiveProc;
 }
 
 int main() {
@@ -133,15 +135,12 @@ int main() {
         //     continue;
         // }
 
-        vector<Process> recentProcesses = getRecentProcesses(RECENT_PROCESSES_LIMIT);
+        vector<Process> cpuExpensiveProc = getCpuExpensiveProcesses(CPU_COMSUMING_PROCESSES_LIMIT);
+        // killProcesses(cpuExpensiveProc);
         if (!sessionStatus) {
             log("Closing current session.");
             continue;
         }
-
-        // for(const Process &p : recentProcesses) {
-        //     cout << p.name << endl;
-        // }
         return 0;
     }
     return 0;
