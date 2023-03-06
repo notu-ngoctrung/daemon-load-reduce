@@ -17,7 +17,7 @@
 using namespace std;
 
 /* Global configuration */
-const string WORKING_DIRECTORY = filesystem::current_path().string() + "/workdir";
+const string WORKING_DIRECTORY = filesystem::current_path().string();
 const string LOG_FILENAME = "log.txt";
 const string REPORT_PREF_FILENAME = "report-";
 const int PERIOD_MIN = 30;
@@ -257,13 +257,6 @@ int main() {
 
         vector<Process> sortedProcsByCpu = getProcessesSortedByCpu();
         vector<pair<Process, int>> killedProcs = killProcesses(sortedProcsByCpu, KILL_PROCESSES_LIMIT);
-
-        // // Debug
-        // cout << "Getting 10 processes to check if they are sorted" << endl;
-        // for(const Process& p : sortedProcsByCpu) {
-        //     cout << "PID: " << p.pid << " - %CPU: " << p.percentCpu << endl;
-        // }
-        // // End debug
         
         reportKilledProcs(killedProcs, loadavg);
 

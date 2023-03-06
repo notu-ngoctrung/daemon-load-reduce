@@ -1,8 +1,8 @@
 TO-DO List - hopefully will go through all of these :)
 
-- [ ] Daemonize the process
-- [ ] Check load & kill processes
-- [ ] Crawl info about the processes
-- [ ] Update this README.md so readers won't hate me.
+- [x] Daemonize the process
+- [x] Check load & kill processes
+- [x] Crawl info about the processes
+- [x] Export to HTML
 
-
+Done!
