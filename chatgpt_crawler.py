@@ -2,7 +2,7 @@ import sys
 import json
 import requests as req
 
-SECRET_KEY = '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'  # Dummy secret key so don't hack me :D
+SECRET_KEY = 'tNPftiu7LmImfymwmynOT3BlbkFJe85AQPUjX3iyI6RE7RPe'  # Dummy secret key so don't hack me :D
 
 processes = sys.argv[1:]
 
