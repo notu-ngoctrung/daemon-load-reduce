@@ -16,12 +16,14 @@
 
 using namespace std;
 
+/* Global configuration */
 const string WORKING_DIRECTORY = filesystem::current_path().string() + "/workdir";
 const string LOG_FILENAME = "log.txt";
 const string REPORT_PREF_FILENAME = "report-";
-const double LOAD_THRESHOLD = 20;
+const double LOAD_THRESHOLD = 10;
 const int KILL_PROCESSES_LIMIT = 5;
 
+/* Datatype to manage details of a process */
 struct Process {
     pid_t pid, ppid;
     double percentCpu, virtualMem;
@@ -48,7 +50,7 @@ void log(const string& content) {
 }
 
 /**
- * @brief Make the program become a daemon.
+ * @brief Make this program become a daemon.
  */
 void daemonize() {
     // First forking
@@ -83,6 +85,11 @@ void daemonize() {
     openlog("load-reduce-daemon", LOG_PID, LOG_DAEMON);
 }
 
+/**
+ * @brief Get and sort the running processes by %CPU (descending order)
+ * 
+ * @return vector<Process> the sorted list of running processes
+ */
 vector<Process> getProcessesSortedByCpu() {
     vector<Process> expensiveProc;
     FILE* cmdOutput = popen("ps -eo 'pid,pcpu,vsz,ppid,comm'", "r");
@@ -113,6 +120,13 @@ vector<Process> getProcessesSortedByCpu() {
     return expensiveProc;
 }
 
+/**
+ * @brief Attempt to kill the processes using `kill {pid}`
+ * 
+ * @param processes a list of running processes
+ * @param lim upperbound number of processes to be killed
+ * @return vector<pair<Process, int>> a list of killed processes & their status (i.e. killed, no permission, not found)
+ */
 vector<pair<Process, int>> killProcesses(const vector<Process>& processes, const int lim) {
     if (!sessionStatus) 
         return {};
@@ -138,10 +152,16 @@ vector<pair<Process, int>> killProcesses(const vector<Process>& processes, const
     return killed;
 }
 
-string getProcInfoFromChatGpt(const vector<pair<Process, int>>& killedProcs) {
+/**
+ * @brief Ask ChatGPT about the process information
+ * 
+ * @param processes a list of processes to be asked
+ * @return string ChatGPT response
+ */
+string getProcInfoFromChatGpt(const vector<pair<Process, int>>& processes) {
     string result = "";
     string cmd = "python3 chatgpt_crawler.py";
-    for(const pair<Process, int>& p : killedProcs)
+    for(const pair<Process, int>& p : processes)
         cmd.append(" " + p.first.name);
 
     char response[1024];
@@ -166,6 +186,12 @@ string getProcInfoFromChatGpt(const vector<pair<Process, int>>& killedProcs) {
     return result;
 }
 
+/**
+ * @brief Export the daemon report to HTML.
+ *  The output file is named "export-{daemon-pid}.html"
+ * @param killedProcs a list of killed processes & their status (killed/ no permission)
+ * @param loadavg the recorded average load (1min-5mins-15mins)
+ */
 void reportKilledProcs(const vector<pair<Process, int>>& killedProcs, double loadavg[3]) {
     if (!sessionStatus) return;
 
@@ -210,7 +236,7 @@ void reportKilledProcs(const vector<pair<Process, int>>& killedProcs, double loa
 
     out << "<h2>Process Information</h2>" << endl;
     out << "<p>What could these processes do in Linux? Let's hear advice from the famous ChatGPT</p>" << endl;
-    out << "<div style=\"margin-left: auto; margin-right: auto; line-height: 1.2rem; width: 70%; background-color: lightgrey; padding: 0.5rem 0.7rem 0.5rem 0.7rem; border-radius: 12px;\">";
+    out << "<div style=\"margin-left: auto; margin-right: auto; line-height: 1.2rem; width: 90%; max-width: 1100px; background-color: lightgrey; padding: 0.5rem 0.7rem 0.5rem 0.7rem; border-radius: 12px;\">";
     out << "<pre style=\"white-space: pre-wrap;\">" << chatGptResponse << "</pre></div>" << endl;
     // out << "<ul>";
     // for(const string& s : chatGptResponses) 
@@ -239,10 +265,10 @@ int main() {
             log("Cannot get the system load. Will try again in the next run");
             continue;
         }
-        // if (loadavg[2] <= LOAD_THRESHOLD) {
-        //     log("The load is " + to_string(loadavg[2]) + " <= " + to_string(LOAD_THRESHOLD) + ". No further actions needed");
-        //     continue;
-        // }
+        if (loadavg[2] <= LOAD_THRESHOLD) {
+            log("The load is " + to_string(loadavg[2]) + " <= " + to_string(LOAD_THRESHOLD) + ". No further actions needed");
+            continue;
+        }
 
         vector<Process> sortedProcsByCpu = getProcessesSortedByCpu();
         vector<pair<Process, int>> killedProcs = killProcesses(sortedProcsByCpu, KILL_PROCESSES_LIMIT);
@@ -252,8 +278,6 @@ int main() {
             log("Closing current session.");
             continue;
         }
-
-        return 0;
     }
     return 0;
 }
