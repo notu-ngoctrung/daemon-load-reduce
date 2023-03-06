@@ -20,6 +20,7 @@ using namespace std;
 const string WORKING_DIRECTORY = filesystem::current_path().string() + "/workdir";
 const string LOG_FILENAME = "log.txt";
 const string REPORT_PREF_FILENAME = "report-";
+const int PERIOD_MIN = 30;
 const double LOAD_THRESHOLD = 10;
 const int KILL_PROCESSES_LIMIT = 5;
 
@@ -215,7 +216,6 @@ void reportKilledProcs(const vector<pair<Process, int>>& killedProcs, double loa
     out << "<table><tr><th>Process</th><th>PID</th><th>%CPU</th><th>PPID</th><th>Virtual Memory (in KiB)</th><th>Status</th>" << endl;
     for(const pair<Process, int>& it : killedProcs) {
         Process proc = it.first;
-        int status = it.second;
         out << "<tr><td>" << proc.name << "</td><td>" << proc.pid << "</td><td>" << fixed << setprecision(1) << proc.percentCpu 
             << "</td><td>" << proc.ppid << "</td><td>" << setprecision(2) << proc.virtualMem << "</td>";
         out << "<td style=\"background: lightgreen\">Killed</td>";
@@ -227,19 +227,15 @@ void reportKilledProcs(const vector<pair<Process, int>>& killedProcs, double loa
     out << "<p>What could these processes do in Linux? Let's hear advice from the famous ChatGPT</p>" << endl;
     out << "<div style=\"margin-left: auto; margin-right: auto; line-height: 1.2rem; width: 90%; max-width: 1100px; background-color: lightgrey; padding: 0.5rem 0.7rem 0.5rem 0.7rem; border-radius: 12px;\">";
     out << "<pre style=\"white-space: pre-wrap;\">" << chatGptResponse << "</pre></div>" << endl;
-    // out << "<ul>";
-    // for(const string& s : chatGptResponses) 
-    //     out << "<li>" << s << "</li>" << endl;
-    // out << "</ul>" << endl;
     out << "</body>" << endl << "</html>";
     out.close();
 }
 
 
 int main() {
-    // daemonize();
+    daemonize();
 
-    chrono::minutes sleepPeriod(2);
+    chrono::minutes sleepPeriod(PERIOD_MIN);
     chrono::system_clock::time_point nextRunTime = chrono::system_clock::now();
 
     double loadavg[3];
@@ -261,14 +257,20 @@ int main() {
 
         vector<Process> sortedProcsByCpu = getProcessesSortedByCpu();
         vector<pair<Process, int>> killedProcs = killProcesses(sortedProcsByCpu, KILL_PROCESSES_LIMIT);
+
+        // // Debug
+        // cout << "Getting 10 processes to check if they are sorted" << endl;
+        // for(const Process& p : sortedProcsByCpu) {
+        //     cout << "PID: " << p.pid << " - %CPU: " << p.percentCpu << endl;
+        // }
+        // // End debug
+        
         reportKilledProcs(killedProcs, loadavg);
 
         if (!sessionStatus) {
             log("Closing current session.");
             continue;
         }
-
-        return 0;
     }
     return 0;
 }
