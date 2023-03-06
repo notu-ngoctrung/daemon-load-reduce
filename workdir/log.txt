@@ -22,3 +22,79 @@ Sun Mar  5 05:58:47 2023	-------------------------------------------
 Sun Mar  5 05:58:47 2023	Hello, I woke up :)
 Sun Mar  5 05:59:37 2023	-------------------------------------------
 Sun Mar  5 05:59:37 2023	Hello, I woke up :)
+Sun Mar  5 23:59:15 2023	-------------------------------------------
+Sun Mar  5 23:59:15 2023	Hello, I woke up :)
+Sun Mar  5 23:59:15 2023	Killed: 0 - /Applications/Google
+Sun Mar  5 23:59:15 2023	Killed: 0 - /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+Sun Mar  5 23:59:15 2023	Killed: 0 - /Applications/Slack.app/Contents/Frameworks/Slack
+Sun Mar  5 23:59:15 2023	Killed: 0 - /Applications/Google
+Sun Mar  5 23:59:15 2023	Killed: 0 - /usr/sbin/coreaudiod
+Sun Mar  5 23:59:15 2023	Attempting to crawl data from ChatGPT...
+Mon Mar  6 00:01:15 2023	-------------------------------------------
+Mon Mar  6 00:01:15 2023	Hello, I woke up :)
+Mon Mar  6 00:01:15 2023	Killed: 0 - /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+Mon Mar  6 00:01:15 2023	Killed: 0 - /Applications/Google
+Mon Mar  6 00:01:15 2023	Killed: 0 - /Applications/Google
+Mon Mar  6 00:01:15 2023	Killed: 0 - /usr/sbin/coreaudiod
+Mon Mar  6 00:01:15 2023	Killed: 0 - /System/Library/DriverExtensions/com.apple.AppleUserHIDDrivers.dext/com.apple.AppleUserHIDDrivers
+Mon Mar  6 00:01:15 2023	Attempting to crawl data from ChatGPT...
+Mon Mar  6 00:06:44 2023	-------------------------------------------
+Mon Mar  6 00:06:44 2023	Hello, I woke up :)
+Mon Mar  6 00:06:44 2023	Killed: 0 - /Applications/Google
+Mon Mar  6 00:06:44 2023	Killed: 0 - /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+Mon Mar  6 00:06:44 2023	Killed: 0 - /Applications/Google
+Mon Mar  6 00:06:44 2023	Killed: 0 - /System/Library/PrivateFrameworks/XprotectFramework.framework/Versions/A/XPCServices/XprotectService.xpc/Contents/MacOS/XprotectService
+Mon Mar  6 00:06:44 2023	Killed: 0 - /Applications/Google
+Mon Mar  6 00:07:33 2023	-------------------------------------------
+Mon Mar  6 00:07:33 2023	Hello, I woke up :)
+Mon Mar  6 00:07:33 2023	Killed: 0 - /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+Mon Mar  6 00:07:33 2023	Killed: 0 - /Applications/Google
+Mon Mar  6 00:07:33 2023	Killed: 0 - /usr/sbin/coreaudiod
+Mon Mar  6 00:07:33 2023	Killed: 0 - /Applications/Google
+Mon Mar  6 00:07:33 2023	Killed: 0 - /System/Library/PrivateFrameworks/XprotectFramework.framework/Versions/A/XPCServices/XprotectService.xpc/Contents/MacOS/XprotectService
+Mon Mar  6 00:07:48 2023	-------------------------------------------
+Mon Mar  6 00:07:48 2023	Hello, I woke up :)
+Mon Mar  6 00:07:48 2023	Killed: 0 - /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+Mon Mar  6 00:07:48 2023	Killed: 0 - /Applications/Google
+Mon Mar  6 00:07:48 2023	Killed: 0 - /System/Library/PrivateFrameworks/XprotectFramework.framework/Versions/A/XPCServices/XprotectService.xpc/Contents/MacOS/XprotectService
+Mon Mar  6 00:07:48 2023	Killed: 0 - /Applications/Google
+Mon Mar  6 00:07:48 2023	Killed: 0 - /usr/sbin/coreaudiod
+Mon Mar  6 00:08:29 2023	-------------------------------------------
+Mon Mar  6 00:08:29 2023	Hello, I woke up :)
+Mon Mar  6 00:08:29 2023	Killed: 0 - /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+Mon Mar  6 00:08:29 2023	Killed: 0 - /Applications/Google
+Mon Mar  6 00:08:29 2023	Killed: 0 - /Applications/Google
+Mon Mar  6 00:08:29 2023	Killed: 0 - /Applications/Google
+Mon Mar  6 00:08:29 2023	Killed: 0 - /usr/sbin/coreaudiod
+Mon Mar  6 00:09:12 2023	-------------------------------------------
+Mon Mar  6 00:09:12 2023	Hello, I woke up :)
+Mon Mar  6 00:09:12 2023	Killed: 0 - /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+Mon Mar  6 00:09:12 2023	Killed: 0 - /Applications/Google
+Mon Mar  6 00:09:12 2023	Killed: 0 - /usr/sbin/coreaudiod
+Mon Mar  6 00:09:12 2023	Killed: 0 - /System/Library/PrivateFrameworks/XprotectFramework.framework/Versions/A/XPCServices/XprotectService.xpc/Contents/MacOS/XprotectService
+Mon Mar  6 00:09:12 2023	Killed: 0 - /Applications/Google
+Mon Mar  6 00:09:12 2023	Attempting to crawl data from ChatGPT...
+Mon Mar  6 00:13:03 2023	-------------------------------------------
+Mon Mar  6 00:13:03 2023	Hello, I woke up :)
+Mon Mar  6 00:13:03 2023	Killed: 0 - /Applications/Google
+Mon Mar  6 00:13:03 2023	Killed: 0 - /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+Mon Mar  6 00:13:03 2023	Killed: 0 - /usr/sbin/coreaudiod
+Mon Mar  6 00:13:03 2023	Killed: 0 - /System/Library/PrivateFrameworks/XprotectFramework.framework/Versions/A/XPCServices/XprotectService.xpc/Contents/MacOS/XprotectService
+Mon Mar  6 00:13:03 2023	Killed: 0 - /Applications/Google
+Mon Mar  6 00:13:03 2023	Attempting to crawl data from ChatGPT...
+Mon Mar  6 00:26:08 2023	-------------------------------------------
+Mon Mar  6 00:26:08 2023	Hello, I woke up :)
+Mon Mar  6 00:26:08 2023	Killed: 173 - /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+Mon Mar  6 00:26:08 2023	Killed: 583 - /Applications/Google
+Mon Mar  6 00:26:08 2023	Killed: 19805 - /System/iOSSupport/System/Library/PrivateFrameworks/AvatarUI.framework/PlugIns/AvatarPickerMemojiPicker.appex/Contents/MacOS/AvatarPickerMemojiPicker
+Mon Mar  6 00:26:08 2023	Killed: 7705 - /Applications/zoom.us.app/Contents/MacOS/zoom.us
+Mon Mar  6 00:26:08 2023	Killed: 40799 - /System/Library/PrivateFrameworks/XprotectFramework.framework/Versions/A/XPCServices/XprotectService.xpc/Contents/MacOS/XprotectService
+Mon Mar  6 00:26:08 2023	Attempting to crawl data from ChatGPT...
+Mon Mar  6 00:31:02 2023	-------------------------------------------
+Mon Mar  6 00:31:02 2023	Hello, I woke up :)
+Mon Mar  6 00:31:02 2023	Killed: 173 - /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+Mon Mar  6 00:31:02 2023	Killed: 226 - /usr/sbin/coreaudiod
+Mon Mar  6 00:31:02 2023	Killed: 40799 - /System/Library/PrivateFrameworks/XprotectFramework.framework/Versions/A/XPCServices/XprotectService.xpc/Contents/MacOS/XprotectService
+Mon Mar  6 00:31:02 2023	Killed: 7705 - /Applications/zoom.us.app/Contents/MacOS/zoom.us
+Mon Mar  6 00:31:02 2023	Killed: 25840 - /Applications/Visual
+Mon Mar  6 00:31:02 2023	Attempting to crawl data from ChatGPT...

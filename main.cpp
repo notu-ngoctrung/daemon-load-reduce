@@ -18,8 +18,9 @@ using namespace std;
 
 const string WORKING_DIRECTORY = filesystem::current_path().string() + "/workdir";
 const string LOG_FILENAME = "log.txt";
+const string REPORT_PREF_FILENAME = "report-";
 const double LOAD_THRESHOLD = 20;
-const int KILL_PROCESSES_LIMIT = 10;
+const int KILL_PROCESSES_LIMIT = 5;
 
 struct Process {
     pid_t pid, ppid;
@@ -100,9 +101,9 @@ vector<Process> getProcessesSortedByCpu() {
         int curPid, ppid;
         double pcpu, vsz;
         char cmd[1024];
-        sscanf(line, "%d %lf %lf %d %s", &curPid, &pcpu, &vsz, &ppid, &cmd);
+        sscanf(line, "%d %lf %lf %d %s", &curPid, &pcpu, &vsz, &ppid, cmd);
         if (curPid != pid) 
-            expensiveProc.push_back(Process(pid, ppid, pcpu, vsz, cmd));
+            expensiveProc.push_back(Process(curPid, ppid, pcpu, vsz, cmd));
     }
     pclose(cmdOutput);
 
@@ -112,30 +113,118 @@ vector<Process> getProcessesSortedByCpu() {
     return expensiveProc;
 }
 
-vector<Process> killProcesses(const vector<Process>& processes, const int lim) {
+vector<pair<Process, int>> killProcesses(const vector<Process>& processes, const int lim) {
     if (!sessionStatus) 
-        return;
+        return {};
 
-    vector<Process> killed;
-    for(int i = 0; i < processes.size() && killed.size() < lim; i++) {
-        int result = kill(processes[i].pid, SIGTERM);
+    vector<pair<Process, int>> killed;
+    for(int i = 0; i < processes.size() && i < lim; i++) {
+        // int result = kill(processes[i].pid, SIGTERM);
+        int result = 0;
         if (result == 0) {
             log("Killed: " + to_string(processes[i].pid) + " - " + processes[i].name);
-            killed.push_back(processes[i]);
+            killed.push_back({processes[i], 0});
         } 
-        else if (result == EPERM) 
+        else if (result == EPERM) {
             log("Killing not permitted: " + to_string(processes[i].pid) + " - " + processes[i].name);
-        else if (result == ESRCH)
+            killed.push_back({processes[i], EPERM});
+        }
+        else if (result == ESRCH) {
             log("PID not found to kill: " + to_string(processes[i].pid) + " - " + processes[i].name);
+            killed.push_back({processes[i], ESRCH});
+        }
     }
     
     return killed;
 }
 
+string getProcInfoFromChatGpt(const vector<pair<Process, int>>& killedProcs) {
+    string result = "";
+    string cmd = "python3 chatgpt_crawler.py";
+    for(const pair<Process, int>& p : killedProcs)
+        cmd.append(" " + p.first.name);
+
+    char response[1024];
+    FILE* cmdOutput = popen(cmd.c_str(), "r");
+    log("Attempting to crawl data from ChatGPT...");
+    if (cmdOutput == nullptr) {
+        sessionStatus = false;
+        log("Failed to crawl data from ChatGPT...");
+        return {};
+    }
+    while (fgets(response, sizeof(response), cmdOutput)) 
+        result.append(string(response));
+    pclose(cmdOutput);
+
+    reverse(result.begin(), result.end());
+    while (result.size() > 0 && (result.back() == '\n' || result.back() == '\r'))
+        result.pop_back();
+    reverse(result.begin(), result.end());
+    while (result.size() > 0 && (result.back() == '\n' || result.back() == '\r'))
+        result.pop_back();
+
+    return result;
+}
+
+void reportKilledProcs(const vector<pair<Process, int>>& killedProcs, double loadavg[3]) {
+    if (!sessionStatus) return;
+
+    auto chatGptResponse = getProcInfoFromChatGpt(killedProcs);
+    if (!sessionStatus) return;
+
+    ofstream out(REPORT_PREF_FILENAME + to_string(pid) + ".html");
+
+    time_t currentTime = time(0);
+    string timeStr = asctime(localtime(&currentTime));
+    out << "<!DOCTYPE html>" << endl << "<html>" << endl;
+    out << "<head><title>Report PID " << pid << " - Load Reduce Daemon</title>" << endl;
+    out << "<style>" << endl;
+    out << "table, th, td { border: 1px solid black; border-collapse: collapse; padding: 0.3rem; text-align: center; }" << endl;
+    out << "table td:first-child { text-align: left; }" << endl;
+    out << "table { margin-left: auto; margin-right: auto; }" << endl;
+    out << "body { padding-left: 1rem; padding-right: 1rem; padding-bottom: 2rem; }" << endl;
+    out << "</style></head>" << endl;
+    out << "<body>" << endl;
+    out << "<h1 style=\"text-align: center;\">Load Reduce Daemon</h1>" << endl;
+    out << "<div style=\"text-align: center;\">Current Local Time: " << timeStr << "</div>" << endl;
+    out << "<h2>Report</h2>" << endl;
+    out << "<div>Average Load:</div><ul>" << endl;
+    for(int i = 0; i < 3; i++) {
+        if (i == 0) out << "<li>1 minute: " << setprecision(2) << loadavg[i] << "</li>" << endl;
+        if (i == 1) out << "<li>5 minutes: " << setprecision(2) << loadavg[i] << "</li>" << endl;
+        if (i == 2) out << "<li>15 minutes: <b>" << setprecision(2) << loadavg[i] << "</b></li></ul>" << endl;
+    }
+    out << "<table><tr><th>Process</th><th>PID</th><th>%CPU</th><th>PPID</th><th>Virtual Memory (in KiB)</th><th>Status</th>" << endl;
+    for(const pair<Process, int>& it : killedProcs) {
+        Process proc = it.first;
+        int status = it.second;
+        out << "<tr><td>" << proc.name << "</td><td>" << proc.pid << "</td><td>" << fixed << setprecision(1) << proc.percentCpu 
+            << "</td><td>" << proc.ppid << "</td><td>" << setprecision(2) << proc.virtualMem << "</td>";
+        if (status == EPERM)
+            out << "<td style=\"\">Not killed: No permission</td>";
+        else
+            out << "<td style=\"background: lightgreen\">Killed</td>";
+        out << "</tr>" << endl;
+    }
+    out << "</table>" << endl;
+
+    out << "<h2>Process Information</h2>" << endl;
+    out << "<p>What could these processes do in Linux? Let's hear advice from the famous ChatGPT</p>" << endl;
+    out << "<div style=\"margin-left: auto; margin-right: auto; line-height: 1.2rem; width: 70%; background-color: lightgrey; padding: 0.5rem 0.7rem 0.5rem 0.7rem; border-radius: 12px;\">";
+    out << "<pre style=\"white-space: pre-wrap;\">" << chatGptResponse << "</pre></div>" << endl;
+    // out << "<ul>";
+    // for(const string& s : chatGptResponses) 
+    //     out << "<li>" << s << "</li>" << endl;
+    // out << "</ul>" << endl;
+    out << "</body>" << endl << "</html>";
+    out.close();
+}
+
+
 int main() {
     // daemonize();
 
-    chrono::seconds sleepPeriod(10);
+    chrono::minutes sleepPeriod(2);
     chrono::system_clock::time_point nextRunTime = chrono::system_clock::now();
 
     double loadavg[3];
@@ -156,11 +245,14 @@ int main() {
         // }
 
         vector<Process> sortedProcsByCpu = getProcessesSortedByCpu();
-        vector<Process> killedProcs = killProcesses(sortedProcsByCpu, KILL_PROCESSES_LIMIT);
+        vector<pair<Process, int>> killedProcs = killProcesses(sortedProcsByCpu, KILL_PROCESSES_LIMIT);
+        reportKilledProcs(killedProcs, loadavg);
+
         if (!sessionStatus) {
             log("Closing current session.");
             continue;
         }
+
         return 0;
     }
     return 0;
