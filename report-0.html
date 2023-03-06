@@ -9,34 +9,26 @@ body { padding-left: 1rem; padding-right: 1rem; padding-bottom: 2rem; }
 </style></head>
 <body>
 <h1 style="text-align: center;">Load Reduce Daemon</h1>
-<div style="text-align: center;">Current Local Time: Mon Mar  6 00:31:16 2023
+<div style="text-align: center;">Current Local Time: Mon Mar  6 06:49:52 2023
 </div>
 <h2>Report</h2>
 <div>Average Load:</div><ul>
-<li>1 minute: 7.5</li>
-<li>5 minutes: 6.7</li>
-<li>15 minutes: <b>6.8</b></li></ul>
+<li>1 minute: 0</li>
+<li>5 minutes: 0.02</li>
+<li>15 minutes: <b>0</b></li></ul>
 <table><tr><th>Process</th><th>PID</th><th>%CPU</th><th>PPID</th><th>Virtual Memory (in KiB)</th><th>Status</th>
-<tr><td>/System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer</td><td>173</td><td>20.3</td><td>1</td><td>411465232.00</td><td style="background: lightgreen">Killed</td></tr>
-<tr><td>/usr/sbin/coreaudiod</td><td>226</td><td>12.8</td><td>1</td><td>409556800.00</td><td style="background: lightgreen">Killed</td></tr>
-<tr><td>/System/Library/PrivateFrameworks/XprotectFramework.framework/Versions/A/XPCServices/XprotectService.xpc/Contents/MacOS/XprotectService</td><td>40799</td><td>11.3</td><td>1</td><td>408273648.00</td><td style="background: lightgreen">Killed</td></tr>
-<tr><td>/Applications/zoom.us.app/Contents/MacOS/zoom.us</td><td>7705</td><td>6.2</td><td>1</td><td>410623616.00</td><td style="background: lightgreen">Killed</td></tr>
-<tr><td>/Applications/Visual</td><td>25840</td><td>5.6</td><td>25833</td><td>471022240.00</td><td style="background: lightgreen">Killed</td></tr>
+<tr><td>tracker-store</td><td>2268746</td><td>0.2</td><td>2267347</td><td>371268.00</td><td style="background: lightgreen">Killed</td></tr>
 </table>
 <h2>Process Information</h2>
 <p>What could these processes do in Linux? Let's hear advice from the famous ChatGPT</p>
-<div style="margin-left: auto; margin-right: auto; line-height: 1.2rem; width: 90%; max-width: 1100px; background-color: lightgrey; padding: 0.5rem 0.7rem 0.5rem 0.7rem; border-radius: 12px;"><pre style="white-space: pre-wrap;">As an AI language model, I do not have access to the specific details of Linux machine on which I am running. Therefore, I can provide a general overview of the processes in Linux mentioned in the question.
+<div style="margin-left: auto; margin-right: auto; line-height: 1.2rem; width: 90%; max-width: 1100px; background-color: lightgrey; padding: 0.5rem 0.7rem 0.5rem 0.7rem; border-radius: 12px;"><pre style="white-space: pre-wrap;">Tracker-store is a process in Linux that is related to the Tracker search engine. The Tracker search engine is used to tag, index, and search for files on the user's computer. Tracker-store is the database component of the Tracker search engine. This process is responsible for indexing the files on the user's computer in a way that allows for fast and efficient searching.
 
-1. /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer: This process is responsible for managing the graphical user interface and windowing system in macOS. It is responsible for rendering windows, handling events like clicks, handling graphics card interactions and many other operations that make the GUI work. In simple terms, it is the interface between the operating system and the user, taking input from various sources (such as the keyboard, mouse, and other input devices) and displaying them on the screen for the user to interact with.
+When a user installs a Linux distribution that includes the Tracker search engine, the tracker-store process is automatically started. The process is responsible for reading the contents of files on the user's computer and creating an index of the files. The index created by tracker-store includes information about the path, size, type, and content of the files. This information is used by the Tracker search engine to quickly find files on the user's computer.
 
-2. /usr/sbin/coreaudiod: This is the core audio process in macOS, responsible for managing all audio-related tasks. It communicates with other audio-related processes and drivers to play, record, and manipulate audio inputs and outputs. It manages audio streams, audio hardware devices, audio configurations, and audio routing.
+The indexing process performed by tracker-store is done in the background and is relatively resource-intensive. This means that it can slow down the performance of the user's computer while it is running. However, the process is designed to run at low priority and should not cause any noticeable slowdowns in most cases.
 
-3. /System/Library/PrivateFrameworks/XprotectFramework.framework/Versions/A/XPCServices/XprotectService.xpc/Contents/MacOS/XprotectService: This is the malware protection service built into macOS. It is responsible for scanning downloaded files and applications for malicious content and protecting the system from malware threats. It updates its database of malware threats regularly and scans new files for malware threats to prevent malware infections.
+One of the benefits of using the Tracker search engine is that it can search for files based on their content. This is useful when the user is looking for a file that they do not remember the name of, but they do remember some text that was in the file. The indexing done by tracker-store allows the Tracker search engine to quickly find files based on the content of the files.
 
-4. /Applications/zoom.us.app/Contents/MacOS/zoom.us: Zoom is a popular video conferencing application. This process is the executable file that starts the Zoom application. The process handles all the video and audio communication, screen sharing, and other features of the application.
-
-5. /Applications/Visual: The full name and path of this process are not given, making it difficult to provide a detailed description. However, we can assume it refers to the Visual Studio Code editor, an open-source code editor developed by Microsoft. The process would be responsible for running the code editor and handling any associated tasks, such as file management and editing.
-
-In conclusion, these processes in Linux and macOS are critical components of the operating system and related applications. They are responsible for managing and controlling various critical functions to ensure the smooth functioning of the system. Understanding them is essential for troubleshooting issues, optimizing performance, and working with these systems effectively.</pre></div>
+In conclusion, tracker-store is a key component of the Tracker search engine in Linux. This process is responsible for indexing files on the user's computer and creating a searchable database of the files. While the indexing process can slow down the performance of the user's computer, it is designed to run at a low priority and should not cause any noticeable slowdowns in most cases. The Tracker search engine, powered by the indexing done by tracker-store, allows users to quickly find files on their computer based on their content, which can be very useful in many situations.</pre></div>
 </body>
 </html>

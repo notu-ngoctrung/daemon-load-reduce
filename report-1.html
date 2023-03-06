@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head><title>Report PID 0 - Load Reduce Daemon</title>
+<style>
+table, th, td { border: 1px solid black; border-collapse: collapse; padding: 0.3rem; text-align: center; }
+table td:first-child { text-align: left; }
+table { margin-left: auto; margin-right: auto; }
+body { padding-left: 1rem; padding-right: 1rem; padding-bottom: 2rem; }
+</style></head>
+<body>
+<h1 style="text-align: center;">Load Reduce Daemon</h1>
+<div style="text-align: center;">Current Local Time: Mon Mar  6 06:43:16 2023
+</div>
+<h2>Report</h2>
+<div>Average Load:</div><ul>
+<li>1 minute: 0.1</li>
+<li>5 minutes: 0.03</li>
+<li>15 minutes: <b>0.01</b></li></ul>
+<table><tr><th>Process</th><th>PID</th><th>%CPU</th><th>PPID</th><th>Virtual Memory (in KiB)</th><th>Status</th>
+<tr><td>tracker-store</td><td>2268357</td><td>0.4</td><td>2267347</td><td>371260.00</td><td style="background: lightgreen">Killed</td></tr>
+<tr><td>sshd</td><td>2268192</td><td>0.4</td><td>1018</td><td>38804.00</td><td style="background: lightgreen">Killed</td></tr>
+<tr><td>sshd</td><td>2268323</td><td>0.2</td><td>2268192</td><td>38944.00</td><td style="background: lightgreen">Killed</td></tr>
+<tr><td>bash</td><td>2268324</td><td>0.1</td><td>2268323</td><td>29968.00</td><td style="background: lightgreen">Killed</td></tr>
+<tr><td>sssd_pac</td><td>2268210</td><td>0.1</td><td>1</td><td>112208.00</td><td style="background: lightgreen">Killed</td></tr>
+</table>
+<h2>Process Information</h2>
+<p>What could these processes do in Linux? Let's hear advice from the famous ChatGPT</p>
+<div style="margin-left: auto; margin-right: auto; line-height: 1.2rem; width: 90%; max-width: 1100px; background-color: lightgrey; padding: 0.5rem 0.7rem 0.5rem 0.7rem; border-radius: 12px;"><pre style="white-space: pre-wrap;">Tracker-store:
+
+Tracker-store is a process that runs on Linux systems and is responsible for indexing and storing metadata about files and applications. It is a part of the GNOME desktop environment and uses the Tracker search engine to provide quick and accurate search results. Tracker-store stores metadata from files and applications in a database that can be searched and indexed efficiently, making it easy to find files and applications on the system. The metadata stored by tracker-store includes file names, locations, file types, and other relevant information.
+
+SSHd:
+
+SSHd (Secure Shell Daemon) is a service that is responsible for providing remote access to Linux servers securely. It is a part of the OpenSSH suite, and it allows users to access the command line of a remote Linux server from their local machine. SSHd has strong encryption and authentication protocols that prevent unauthorized access and protect the system from attackers. Once the user logs into the server, SSHd provides a secure communication channel between the local and remote machines, ensuring that sensitive information such as passwords or data is transmitted securely.
+
+Bash:
+
+Bash is a command language interpreter and command processor on Linux systems. It is the default shell used on most Linux distributions, and it provides a command-line interface for users to interact with the system. Bash can execute commands and scripts, process input and output, and manage variables and data structures. It also provides helpful features such as command history, filename completion, and shell scripting. As a command-line interpreter, Bash is a powerful tool for system administrators and developers, allowing them to automate tasks and perform system management tasks with ease.
+
+SSSD_PAC:
+
+SSSD_PAC is a process that is used by the System Security Services Daemon (SSSD) to retrieve security attributes from Active Directory. SSSD is a service that provides centralized identity and authentication management on Linux systems, and it integrates with various directory services such as Microsoft Active Directory or Red Hat Directory Server. SSSD_PAC retrieves the security attributes of a user from the Active Directory and converts them into a PAC (Privilege Attribute Certificate) that can be used to grant or deny access to resources on the Linux system. This process is crucial for ensuring that users have access to the resources they need and preventing unauthorized access to sensitive data. SSSD and SSSD_PAC are essential components of centralized identity management solutions on Linux systems.</pre></div>
+</body>
+</html>

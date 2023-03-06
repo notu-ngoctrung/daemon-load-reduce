@@ -132,20 +132,12 @@ vector<pair<Process, int>> killProcesses(const vector<Process>& processes, const
         return {};
 
     vector<pair<Process, int>> killed;
-    for(int i = 0; i < processes.size() && i < lim; i++) {
+    for(int i = 0; i < processes.size() && killed.size() < lim; i++) {
         // int result = kill(processes[i].pid, SIGTERM);
         int result = 0;
         if (result == 0) {
             log("Killed: " + to_string(processes[i].pid) + " - " + processes[i].name);
             killed.push_back({processes[i], 0});
-        } 
-        else if (result == EPERM) {
-            log("Killing not permitted: " + to_string(processes[i].pid) + " - " + processes[i].name);
-            killed.push_back({processes[i], EPERM});
-        }
-        else if (result == ESRCH) {
-            log("PID not found to kill: " + to_string(processes[i].pid) + " - " + processes[i].name);
-            killed.push_back({processes[i], ESRCH});
         }
     }
     
@@ -226,10 +218,7 @@ void reportKilledProcs(const vector<pair<Process, int>>& killedProcs, double loa
         int status = it.second;
         out << "<tr><td>" << proc.name << "</td><td>" << proc.pid << "</td><td>" << fixed << setprecision(1) << proc.percentCpu 
             << "</td><td>" << proc.ppid << "</td><td>" << setprecision(2) << proc.virtualMem << "</td>";
-        if (status == EPERM)
-            out << "<td style=\"\">Not killed: No permission</td>";
-        else
-            out << "<td style=\"background: lightgreen\">Killed</td>";
+        out << "<td style=\"background: lightgreen\">Killed</td>";
         out << "</tr>" << endl;
     }
     out << "</table>" << endl;
@@ -278,6 +267,8 @@ int main() {
             log("Closing current session.");
             continue;
         }
+
+        return 0;
     }
     return 0;
 }
