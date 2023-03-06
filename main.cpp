@@ -196,7 +196,7 @@ void reportKilledProcs(const vector<pair<Process, int>>& killedProcs, double loa
     time_t currentTime = time(0);
     string timeStr = asctime(localtime(&currentTime));
     out << "<!DOCTYPE html>" << endl << "<html>" << endl;
-    out << "<head><title>Report PID " << pid << " - Load Reduce Daemon</title>" << endl;
+    out << "<head><title>Report PID " << pid << " - Load Reduce + ChatGPT Daemon</title>" << endl;
     out << "<style>" << endl;
     out << "table, th, td { border: 1px solid black; border-collapse: collapse; padding: 0.3rem; text-align: center; }" << endl;
     out << "table td:first-child { text-align: left; }" << endl;
@@ -204,7 +204,7 @@ void reportKilledProcs(const vector<pair<Process, int>>& killedProcs, double loa
     out << "body { padding-left: 1rem; padding-right: 1rem; padding-bottom: 2rem; }" << endl;
     out << "</style></head>" << endl;
     out << "<body>" << endl;
-    out << "<h1 style=\"text-align: center;\">Load Reduce Daemon</h1>" << endl;
+    out << "<h1 style=\"text-align: center;\">Load Reduce + ChatGPT Daemon</h1>" << endl;
     out << "<div style=\"text-align: center;\">Current Local Time: " << timeStr << "</div>" << endl;
     out << "<h2>Report</h2>" << endl;
     out << "<div>Average Load:</div><ul>" << endl;
