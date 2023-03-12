@@ -45,27 +45,20 @@ pid_t pid;      // this daemon PID
 void daemonize() {
     // First forking
     pid = fork();
-    if (pid < 0) {
-        // log("First forking is unsuccessful");
+    if (pid < 0) 
         exit(EXIT_FAILURE);
-    }
-    if (pid > 0) {
-        // log("Child PID: " + to_string(pid));
+    if (pid > 0) 
         exit(EXIT_SUCCESS);
-    }
     if (setsid() < 0)
         exit(EXIT_FAILURE);
     
     // Second forking
     pid = fork();
-    if (pid < 0) {
-        // log("Second forking is unsuccessful");
+    if (pid < 0) 
         exit(EXIT_FAILURE);
-    }
-    if (pid > 0) {
-        // log("Grandchild PID: " + to_string(pid));
+    if (pid > 0) 
         exit(EXIT_SUCCESS);
-    }
+        
     umask(0);
     chdir(WORKING_DIRECTORY.c_str());
 
