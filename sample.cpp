@@ -1,11 +1,24 @@
-#include <bits/stdc++.h>
+#include <iostream>
+#include <algorithm>
+#include <vector>
+#include <string>
+#include <fstream>
+#include <filesystem>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <syslog.h>
+#include <signal.h>
+#include <ctime>
+#include <chrono>
+#include <thread>
 using namespace std;
 
 /*
-    Intro: a daemon that    (1) run periodically in PERIOD_MIN minutes, 
-                            (2) check cpu load
-                            (3) if the load > LOAD_THRESHOLD, kill KILL_PROCESSES_LIMIT processes by %CPU
-                            (4) reach out to ChatGPT to ask about their info ("What do these processes do in Linux?")
+    Intro: a program that   (1) turns itself into a linux daemon, 
+                            (2) get & sort running processes by %CPU
+                            (3) reach out to ChatGPT to ask about their info ("What do these processes do in Linux?")
                                 res = req.post('https://api.openai.com/v1/chat/completions', json=request_body, headers=request_headers, timeout=30)
 */
 
@@ -94,26 +107,6 @@ vector<Process> getProcessesSortedByCpu() {
         return a.percentCpu > b.percentCpu;
     });
     return expensiveProc;
-}
-
-/**
- * @brief Attempt to kill the processes using `kill {pid}`
- * 
- * @param processes a list of running processes
- * @param lim upperbound number of processes to be killed
- * @return vector<pair<Process, int>> a list of killed processes & their status (i.e. killed, no permission, not found)
- */
-vector<pair<Process, int>> killProcesses(const vector<Process>& processes, const int lim) {
-    vector<pair<Process, int>> killed;
-    for(int i = 0; i < processes.size() && killed.size() < lim; i++) {
-        int result = kill(processes[i].pid, SIGTERM);
-        if (result == 0) {
-            // log("Killed: " + to_string(processes[i].pid) + " - " + processes[i].name);
-            killed.push_back({processes[i], 0});
-        }
-    }
-    
-    return killed;
 }
 
 /**
